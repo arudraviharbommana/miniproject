@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visa Case Prediction UI</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+        background: linear-gradient(135deg, #11998e, #38ef7d); /* Cool teal to green gradient */
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        color: #333;
+    }
+    .container {
+        background: #ffffff;
+        padding: 30px 35px;
+        max-width: 650px;
+        width: 100%;
+        border-radius: 14px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        animation: fadeIn 0.6s ease-in-out;
+    }
+    h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #11998e;
+        font-size: 26px;
+        font-weight: 600;
+        letter-spacing: 1px;
+    }
+    label {
+        font-weight: 600;
+        margin-top: 15px;
+        display: block;
+    }
+    select, input[type="number"], input[type="text"] {
+        width: 100%;
+        padding: 10px 12px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        background-color: #fafafa;
+    }
+    select:focus, input:focus {
+        border-color: #11998e;
+        box-shadow: 0 0 5px rgba(17,153,142,0.3);
+        outline: none;
+        background-color: #fff;
+    }
+    .helper-text {
+        font-size: 12px;
+        color: #777;
+        margin-bottom: 5px;
+    }
+    button {
+        background: linear-gradient(135deg, #11998e, #38ef7d);
+        border: none;
+        color: #fff;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 25px;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+    button:hover {
+        background: linear-gradient(135deg, #38ef7d, #11998e);
+        transform: translateY(-2px) scale(1.03);
+    }
+    .result {
+        margin-top: 25px;
+        padding: 15px;
+        text-align: center;
+        background: #e8fbf4;
+        color: #11998e;
+        font-weight: bold;
+        border-radius: 8px;
+        display: none;
+        animation: slideIn 0.4s ease-in-out;
+        font-size: 18px;
+        letter-spacing: 1px;
+    }
+    @keyframes fadeIn {
+        from {opacity: 0; transform: translateY(-15px);}
+        to {opacity: 1; transform: translateY(0);}
+    }
+    @keyframes slideIn {
+        from {opacity: 0; transform: translateY(10px);}
+        to {opacity: 1; transform: translateY(0);}
+    }
+    @media (max-width: 700px) {
+        .container { padding: 20px 10px; }
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h2>Visa Case Prediction</h2>
+
+
+    <label for="continent">Continent</label>
+    <select id="continent">
+        <option value="">Select Continent</option>
+        <option>Asia</option>
+        <option>Europe</option>
+        <option>Africa</option>
+        <option>North America</option>
+        <option>South America</option>
+        <option>Oceania</option>
+    </select>
+
+    <label for="education_of_employee">Education</label>
+    <select id="education_of_employee">
+        <option value="">Select Education</option>
+        <option>Bachelor's</option>
+        <option>Master's</option>
+        <option>Doctorate</option>
+        <option>High School</option>
+    </select>
+
+    <label for="has_job_experience">Has Job Experience</label>
+    <select id="has_job_experience">
+        <option value="">Select</option>
+        <option>Yes</option>
+        <option>No</option>
+    </select>
+
+    <label for="requires_job_training">Requires Job Training</label>
+    <select id="requires_job_training">
+        <option value="">Select</option>
+        <option>Yes</option>
+        <option>No</option>
+    </select>
+
+    <label for="region_of_employment">Region of Employment</label>
+    <select id="region_of_employment">
+        <option value="">Select Region</option>
+        <option>Midwest</option>
+        <option>Northeast</option>
+        <option>South</option>
+        <option>West</option>
+    </select>
+
+    <label for="unit_of_wage">Unit of Wage</label>
+    <select id="unit_of_wage">
+        <option value="">Select Unit</option>
+        <option>Hour</option>
+        <option>Week</option>
+        <option>Month</option>
+        <option>Year</option>
+    </select>
+
+    <label for="full_time_position">Full Time Position</label>
+    <select id="full_time_position">
+        <option value="">Select</option>
+        <option>Yes</option>
+        <option>No</option>
+    </select>
+
+    <label for="no_of_employees">Number of Employees</label>
+    <input type="number" id="no_of_employees" placeholder="1 - 100000" min="1" max="100000">
+
+    <label for="yr_of_estab">Year of Establishment</label>
+    <input type="number" id="yr_of_estab" placeholder="1800 - 2025" min="1800" max="2025">
+
+    <label for="prevailing_wage">Prevailing Wage ($)</label>
+    <input type="number" id="prevailing_wage" placeholder="1000 - 1000000" min="1000" max="1000000">
+
+    <button onclick="predictResult()">Predict</button>
+
+    <div class="result" id="resultBox"></div>
+</div>
+
+<script>
+function predictResult() {
+    
+
+    // Require all dropdown and number inputs to be filled
+    const inputs = document.querySelectorAll("select, input[type='number']");
+    for (let input of inputs) {
+        if (input.value === "") {
+            alert("Please fill all fields before predicting.");
+            return;
+        }
+    }
+
+    // Prepare form data
+    const data = {
+    // case_id removed, not needed for prediction
+        continent: document.getElementById('continent').value,
+        education_of_employee: document.getElementById('education_of_employee').value,
+        has_job_experience: document.getElementById('has_job_experience').value,
+        requires_job_training: document.getElementById('requires_job_training').value,
+        region_of_employment: document.getElementById('region_of_employment').value,
+        unit_of_wage: document.getElementById('unit_of_wage').value,
+        full_time_position: document.getElementById('full_time_position').value,
+        no_of_employees: Number(document.getElementById('no_of_employees').value),
+        yr_of_estab: Number(document.getElementById('yr_of_estab').value),
+        prevailing_wage: Number(document.getElementById('prevailing_wage').value)
+    };
+
+    // Call backend
+        fetch("https://reimagined-sniffle-g4qgqp976xgv27pv-5000.app.github.dev/predict", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(result => {
+        if (result.error) {
+            alert("Error: " + result.error);
+        } else {
+            const box = document.getElementById("resultBox");
+            box.innerText = "🎯 Predicted Case Status: " + result.prediction;
+            box.style.display = "block";
+        }
+    })
+    .catch(err => alert("Request failed: " + err));
+}
+</script>
+</body>
+</html>
